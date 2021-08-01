@@ -1,10 +1,18 @@
 const express = require('express')
 const app = express()
+const sqlite3 = require('sqlite3')
+const dbPath = "app/db/database.sqlite3"
 
-// ターミナルで curl -X GET http://localhost:3000/api/v1/hello を叩くと
-// {"message":"Hello, World!"}が返ってくる
-app.get('/api/v1/hello', ( req, res ) => {
-    res.json({ "message": "Hello, World!" })
+// Get all users
+app.get('/api/v1/users', ( req, res ) => {
+    // Connect database
+    const db = new sqlite3.Database( dbPath )
+
+    db.all('SELECT * FROM users', (error, rows) => {
+        res.json(rows)
+    })
+
+    db.close()
 })
 
 const port = process.env.PORT || 3000;
